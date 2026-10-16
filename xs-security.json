@@ -1,0 +1,14 @@
+{
+  "xsappname": "sap-gov-sandbox",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    { "name": "$XSAPPNAME.agent",   "description": "Call the governed lookups and validation (agent / destination client)" },
+    { "name": "$XSAPPNAME.auditor", "description": "Read the audit trail" }
+  ],
+  "attributes": [],
+  "role-templates": [
+    { "name": "Agent",   "description": "Agent access",   "scope-references": ["$XSAPPNAME.agent"] },
+    { "name": "Auditor", "description": "Audit read access", "scope-references": ["$XSAPPNAME.auditor"] }
+  ],
+  "authorities": ["$XSAPPNAME.agent"]
+}

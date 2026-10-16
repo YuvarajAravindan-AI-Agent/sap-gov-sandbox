@@ -1,0 +1,60 @@
+{
+  "name": "sap-gov-sandbox",
+  "version": "1.0.0",
+  "description": "Governed maintenance stock validation service: deterministic lookups + audit trail on SAP HANA Cloud",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^8",
+    "express": "^4",
+    "@sap/xssec": "^4",
+    "@cap-js/hana": "^1"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^1",
+    "@sap/cds-dk": "^8.9.19"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "test": "node test/validate.test.js && node test/e2e.test.js"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "[production]": {
+          "kind": "hana"
+        },
+        "[development]": {
+          "kind": "sqlite",
+          "credentials": {
+            "url": ":memory:"
+          }
+        }
+      },
+      "auth": {
+        "[production]": {
+          "kind": "xsuaa"
+        },
+        "[development]": {
+          "kind": "mocked",
+          "users": {
+            "agent": {
+              "password": "agent",
+              "roles": [
+                "agent"
+              ]
+            },
+            "auditor": {
+              "password": "auditor",
+              "roles": [
+                "auditor"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "sql": {
+      "native_hana_associations": false
+    }
+  }
+}

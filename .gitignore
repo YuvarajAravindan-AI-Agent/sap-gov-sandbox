@@ -1,0 +1,5 @@
+node_modules/
+gen/
+mta_archives/
+*.sqlite
+default-env.json
