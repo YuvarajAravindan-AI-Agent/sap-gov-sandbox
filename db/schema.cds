@@ -37,6 +37,14 @@ entity OperationComponents : cuid {
   requiredQty : Decimal(13, 3);
 }
 
+// Stand-in for the system of record (an S/4HANA material ledger). It is a separate table, maintained separately, and
+// read through srv/sor.js, so the reconciliation check is an independent second read, not a repeat of the first.
+entity SystemOfRecordBalances {
+  key material : Association to Materials;
+  balance      : Decimal(13, 3);
+  asOf         : Timestamp;
+}
+
 // Every lookup and every verdict is written here, so any answer the agent
 // gives can be traced back to the exact data and arithmetic behind it.
 entity AuditLog : cuid {
@@ -57,4 +65,5 @@ entity AuditLog : cuid {
   seq           : Integer;      // position in the chain (rows from before v2 have none)
   prevHash      : String(64);
   hash          : String(64);
+  reconciliation: String(12);   // MATCH | MISMATCH | UNAVAILABLE | null when the call has nothing to reconcile
 }

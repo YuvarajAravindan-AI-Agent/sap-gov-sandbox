@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "cds-serve",
-    "test": "node test/validate.test.js && node test/chain.test.js && node test/e2e.test.js"
+    "test": "node test/validate.test.js && node test/chain.test.js && node test/reconcile.test.js && node test/e2e.test.js"
   },
   "cds": {
     "requires": {

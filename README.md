@@ -47,3 +47,17 @@ Every audit row now also records `endUser` (who the agent asked on behalf of; se
 Rows are chained: `seq`, `prevHash` and `hash` (SHA-256 over the row plus the previous hash). `GET /stock/verifyAuditChain()` (auditor role) recomputes the chain and reports the first edited or missing row.
 
 Limits: this detects tampering, it does not prevent it (a database administrator can still change rows; use HANA audit policies or an external anchor for that). One writer holds the chain at a time, which is fine for one CF instance and trial volume. Rows written before v2 have no `seq` and are reported as `legacyUnchained`.
+
+## Audit v2.1: export and reconciliation
+
+**Export.** `GET /stock/exportAudit(fromSeq=1,limit=500)` (auditor role) returns the trail as JSON Lines: a header that says how to verify (`hashedFields` per schema version, algorithm, genesis, head hash), then one line per row. The export is itself an audited call. Verify a file anywhere, with no SAP system and no dependencies:
+
+    node tools/verify-export.js audit-export.jsonl
+
+It exits 0 when the chain is intact, 1 when it is broken (and prints the first bad `seq`). A file that starts after seq 1 is checked for internal consistency only; the header says so.
+
+**Reconciliation.** After `validateOrderStock` computes its verdict, `srv/sor.js` reads the same materials from an independent source (`gov.SystemOfRecordBalances`, standing in for the S/4HANA material ledger) and compares. The answer carries `reconciliation: {status, mismatches}` and the audit row carries `reconciliation = MATCH | MISMATCH | UNAVAILABLE`, hashed into the chain. A mismatch does not change the verdict and does not block the answer; it is a flag for a human. `UNAVAILABLE` means the ledger could not be read.
+
+Limits: the ledger here is a table in the same HANA database, so this shows the pattern and not independence of infrastructure. Against a real S/4HANA, replace the body of `ledgerBalances()` with a call to the material ledger API through a BTP destination.
+
+Tests: run `npm test` under Node 22 (the Cloud Foundry runtime line). `better-sqlite3` 11 (the local test database inside `@cap-js/sqlite`) aborts intermittently on Node 24 with `Assertion failed: (env) != nullptr` while garbage-collecting; that is a test-driver problem and does not occur on HANA. After switching Node versions, delete `node_modules` and run `npm install`.

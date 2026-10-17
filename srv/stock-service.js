@@ -1,5 +1,6 @@
 const cds = require('@sap/cds')
-const { appendInRequest, appendOwnTx, verify, dataVersion } = require('./audit')
+const { appendInRequest, appendOwnTx, verify, exportRows, dataVersion } = require('./audit')
+const { reconcile } = require('./sor')
 
 // Decimal-safe arithmetic: work in integer thousandths (columns are Decimal(13,3)).
 const toMilli = n => Math.round(Number(n) * 1000)
@@ -50,12 +51,22 @@ module.exports = class StockService extends cds.ApplicationService {
 
     // Successful answers: the audit row joins the request transaction and commits with the answer it describes.
     // dataRead is the raw rows the answer was computed from; its hash proves which data state the answer rests on.
-    const respond = async (req, tool, input, output, dataRead, asOf) => {
-      await appendInRequest(req, row(req, tool, input, output, 'OK', 200, { dataVersion: dataVersion(dataRead), asOf }))
+    const respond = async (req, tool, input, output, dataRead, asOf, reconciliation) => {
+      await appendInRequest(req, row(req, tool, input, output, 'OK', 200, { dataVersion: dataVersion(dataRead), asOf, reconciliation }))
       return JSON.stringify(output)
     }
 
     this.on('verifyAuditChain', async () => JSON.stringify(await verify()))
+
+    // Exporting the trail is itself audited (in the request transaction, so the export that follows includes it).
+    this.on('exportAudit', async req => {
+      const { fromSeq, limit } = req.data
+      const text = await exportRows(fromSeq, limit)
+      const header = JSON.parse(text.slice(0, text.indexOf('\n')))
+      await appendInRequest(req, row(req, 'exportAudit', { fromSeq, limit }, { rows: header.rows, headSeq: header.headSeq }, 'OK', 200,
+        { dataVersion: dataVersion(header.headHash), asOf: new Date().toISOString() }))
+      return text
+    })
 
     this.on('getMaintenanceOrderDetails', async req => {
       const { orderID } = req.data
@@ -130,7 +141,9 @@ module.exports = class StockService extends cds.ApplicationService {
         }
       }
       const verdict = lines.every(l => l.status === 'SUFFICIENT') ? 'ALL_COMPONENTS_AVAILABLE' : 'SHORTAGE'
-      return respond(req, 'validateOrderStock', { orderID }, { orderID, verdict, lines }, dataRead, asOf)
+      // Independent second read against the system of record; a disagreement is flagged in the answer and in the audit row.
+      const reconciliation = await reconcile(lines)
+      return respond(req, 'validateOrderStock', { orderID }, { orderID, verdict, lines, reconciliation }, dataRead, asOf, reconciliation.status)
     })
 
     return super.init()

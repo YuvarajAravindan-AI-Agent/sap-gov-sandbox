@@ -23,6 +23,10 @@ service StockService {
   @requires: 'auditor'
   function verifyAuditChain() returns LargeString;
 
+  // The audit trail as a self-describing JSON Lines file; verify it offline with tools/verify-export.js.
+  @requires: 'auditor'
+  function exportAudit(fromSeq : Integer, limit : Integer) returns LargeString;
+
   @readonly @restrict: [{ grant: 'READ', to: 'auditor' }]
   entity AuditLog as projection on gov.AuditLog;
 }

@@ -34,6 +34,9 @@ const basic = (u, p) => ({ Authorization: 'Basic ' + Buffer.from(`${u}:${p}`).to
     const chain = JSON.parse((await (await get('verifyAuditChain()', auditor)).json()).value)
     assert.ok(chain.ok && chain.rows >= 5, 'chain intact across success, 404, 403 and 401 rows: ' + JSON.stringify(chain))
     assert.strictEqual((await get('verifyAuditChain()', agent)).status, 403, 'agents cannot run the chain check')
+    assert.strictEqual((await get('exportAudit(fromSeq=1,limit=10)', agent)).status, 403, 'agents cannot export the trail')
+    const exp = await get('exportAudit(fromSeq=1,limit=10)', auditor); assert.strictEqual(exp.status, 200)
+    assert.strictEqual(JSON.parse(JSON.parse(await exp.text()).value.split('\n')[0]).format, 'gov-audit-export/1')
     console.log('OK - success, not-found and denied calls all audited, plus denied (403) and unauthenticated (401)')
   } finally { try { process.kill(-srv.pid) } catch {} }
   process.exit(0)
