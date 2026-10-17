@@ -1,5 +1,5 @@
 const cds = require('@sap/cds')
-const { appendInRequest, appendOwnTx, verify, dataVersion } = require('../lib/audit')
+const { appendInRequest, appendOwnTx, verify, dataVersion } = require('./audit')
 
 // Decimal-safe arithmetic: work in integer thousandths (columns are Decimal(13,3)).
 const toMilli = n => Math.round(Number(n) * 1000)

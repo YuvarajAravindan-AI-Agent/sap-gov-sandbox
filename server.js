@@ -1,5 +1,5 @@
 const cds = require('@sap/cds')
-const { appendOwnTx } = require('./lib/audit')
+const { appendOwnTx } = require('./srv/audit')
 
 // CAP rejects unauthenticated (401) and unauthorized (403) requests before any service handler runs,
 // so those attempts are recorded here, once the response is finished, in their own transaction.
