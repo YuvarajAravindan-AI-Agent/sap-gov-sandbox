@@ -39,3 +39,11 @@ Free-tier HANA stops nightly; restart it in HANA Cloud Central before use. Seed 
 - **Correlation.** Send `x-correlation-id` per conversation; without it the Cloud Foundry request id is used.
 - **Network.** The database accepts connections from Cloud Foundry only, so read it from inside CF
   (for example `cf run-task sap-gov-sandbox-srv`) rather than from a laptop.
+
+
+## Audit trail v2 (2.0.0)
+
+Every audit row now also records `endUser` (who the agent asked on behalf of; sent in the `x-end-user` header, asserted by the caller and not authenticated), `dataVersion` (SHA-256 of the exact rows the answer was computed from), `asOf`, `ruleVersion` and `schemaVersion`.
+Rows are chained: `seq`, `prevHash` and `hash` (SHA-256 over the row plus the previous hash). `GET /stock/verifyAuditChain()` (auditor role) recomputes the chain and reports the first edited or missing row.
+
+Limits: this detects tampering, it does not prevent it (a database administrator can still change rows; use HANA audit policies or an external anchor for that). One writer holds the chain at a time, which is fine for one CF instance and trial volume. Rows written before v2 have no `seq` and are reported as `legacyUnchained`.

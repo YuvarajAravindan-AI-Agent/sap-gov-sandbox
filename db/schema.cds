@@ -48,4 +48,13 @@ entity AuditLog : cuid {
   tool          : String(60);
   input         : LargeString;
   output        : LargeString;
+  // v2: what exactly was read, under which rules, and a hash chain that makes edits and deletions detectable.
+  endUser       : String(120);  // person on whose behalf the agent asked (asserted by the caller, not authenticated)
+  dataVersion   : String(64);   // SHA-256 of the rows the answer was computed from
+  asOf          : Timestamp;    // when that data was read
+  ruleVersion   : String(60);   // service/rules version that produced the answer
+  schemaVersion : Integer;
+  seq           : Integer;      // position in the chain (rows from before v2 have none)
+  prevHash      : String(64);
+  hash          : String(64);
 }

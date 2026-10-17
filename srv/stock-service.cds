@@ -19,6 +19,10 @@ service StockService {
   @requires: 'agent'
   function validateOrderStock(orderID : Integer)         returns LargeString;
 
+  // Recomputes the audit hash chain and reports the first broken row, if any.
+  @requires: 'auditor'
+  function verifyAuditChain() returns LargeString;
+
   @readonly @restrict: [{ grant: 'READ', to: 'auditor' }]
   entity AuditLog as projection on gov.AuditLog;
 }

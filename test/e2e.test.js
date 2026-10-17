@@ -31,6 +31,9 @@ const basic = (u, p) => ({ Authorization: 'Basic ' + Buffer.from(`${u}:${p}`).to
     assert.ok(rows.find(r => r.outcome === 'DENIED' && r.caller === 'agent' && /AuditLog/.test(r.tool)), 'agent reading AuditLog audited')
     assert.ok(rows.find(r => r.outcome === 'DENIED' && r.httpStatus === 401 && r.caller === 'unauthenticated'), '401 audited')
     assert.ok(rows.every(r => r.correlationID), 'every row has a correlation id')
+    const chain = JSON.parse((await (await get('verifyAuditChain()', auditor)).json()).value)
+    assert.ok(chain.ok && chain.rows >= 5, 'chain intact across success, 404, 403 and 401 rows: ' + JSON.stringify(chain))
+    assert.strictEqual((await get('verifyAuditChain()', agent)).status, 403, 'agents cannot run the chain check')
     console.log('OK - success, not-found and denied calls all audited, plus denied (403) and unauthenticated (401)')
   } finally { try { process.kill(-srv.pid) } catch {} }
   process.exit(0)
