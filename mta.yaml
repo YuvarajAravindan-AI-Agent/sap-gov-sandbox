@@ -26,6 +26,7 @@ modules:
     requires:
       - name: sap-gov-sandbox-db
       - name: sap-gov-sandbox-auth
+      - name: gov-dest-admin   # destination lookups (GovLedgerService)
 
   - name: sap-gov-sandbox-db-deployer
     type: hdb
@@ -36,6 +37,8 @@ modules:
       - name: sap-gov-sandbox-db
 
 resources:
+  - name: gov-dest-admin
+    type: org.cloudfoundry.existing-service
   - name: sap-gov-sandbox-db
     type: com.sap.xs.hdi-container
     parameters:

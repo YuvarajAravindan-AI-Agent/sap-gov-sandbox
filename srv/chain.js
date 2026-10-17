@@ -28,4 +28,9 @@ function verifyRows(rows, start = {}) {
   return { ok: true, rows: rows.length, headSeq: rows.length ? rows[rows.length - 1].seq : 0, headHash: rows.length ? prevHash : null }
 }
 
-module.exports = { GENESIS, FIELDS, sha, iso, canonical, hashRow, verifyRows }
+// Rows written before the chain existed (no seq) cannot be chained after the fact. Instead a single chained row
+// attests to a digest of all of them, so any later change to those rows is detectable.
+const LEGACY_FIELDS = ['ID', 'timestamp', 'correlationID', 'outcome', 'httpStatus', 'caller', 'tool', 'input', 'output']
+const legacyDigest = rows => sha(JSON.stringify(rows.map(r => LEGACY_FIELDS.map(f => f === 'timestamp' ? iso(r[f]) : (r[f] ?? null)))))
+
+module.exports = { GENESIS, FIELDS, LEGACY_FIELDS, sha, iso, canonical, hashRow, verifyRows, legacyDigest }

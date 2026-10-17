@@ -142,7 +142,7 @@ module.exports = class StockService extends cds.ApplicationService {
       }
       const verdict = lines.every(l => l.status === 'SUFFICIENT') ? 'ALL_COMPONENTS_AVAILABLE' : 'SHORTAGE'
       // Independent second read against the system of record; a disagreement is flagged in the answer and in the audit row.
-      const reconciliation = await reconcile(lines)
+      const reconciliation = await reconcile(lines, correlation(req))
       return respond(req, 'validateOrderStock', { orderID }, { orderID, verdict, lines, reconciliation }, dataRead, asOf, reconciliation.status)
     })
 
