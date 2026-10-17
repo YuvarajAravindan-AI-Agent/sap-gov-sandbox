@@ -21,7 +21,7 @@ Order 1000001: material 41 needs 1.7 vs 500 available (SUFFICIENT); material 42 
 
 ## Run locally
     npm install && npm test          # arithmetic + audit test on in-memory SQLite
-    npx cds watch                    # mocked users agent/agent, auditor/auditor
+    npx cds watch                    # local mock users agent/agent, auditor/auditor (development only, not real credentials)
 
 ## Deploy to the BTP trial (from the BAS dev space terminal)
     cf login --sso                   # org 06407a50trial, space dev
