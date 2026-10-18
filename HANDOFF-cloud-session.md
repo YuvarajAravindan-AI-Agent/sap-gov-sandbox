@@ -39,3 +39,7 @@ Nothing in the SAP sandbox changed in the cloud session. It had no access to the
 - BAS access trick: BTP cockpit home -> SAP Business Application Studio tile (no password needed); cf login still valid.
 - 2026-10-18 08:17: apps srv/agent/ledger STARTED. Chat test MATCH OK (conv-98577513...). LEDGER_ADJUST demo gave MISMATCH (material 42, 8.8 vs 9.1; conv-68b33352...). Ledger RESTORED (env unset, restarted).
 - Remaining: screenshots, follow-up video (Contabo), LinkedIn text, commits/push, STOP the 3 apps + BAS dev space when done.
+- 2026-10-18 ~09:15: evidence screenshots in ~/Projects/sap-agents-video/assets2 (chat crops, cockpit apps/destinations, BAS destsetup + chain verify: ok true, 11 rows, legacyBaseline seq 9 covered 21).
+- Part-2 video DONE: project ~/Projects/sap-agents-video-v2 (Contabo /opt/ai-digest/sap-agents-v2), outputs ~/Videos/sap-governed-agents/sap-agents-part2.mp4 (34.4 MB, 5:05) + sap-agents-part2-linkedin-9p9.mp4 (9.81 MB); style horizon-left-rail-azure-teal registered + mirrored. Post draft: ~/Videos/sap-governed-agents/linkedin-post-part2.txt (NOT posted).
+- STILL RUNNING (trial, no cost): sap-gov-sandbox-srv, sap-gov-agent, sap-gov-ledger + BAS dev space govsandbox_dev. Stop when done.
+- Open: push repos (sandbox repo is PUBLIC; agent + ledger have no remote), export audit before trial ends (~mid-Jan 2027), DEPLOY.md runbook.
