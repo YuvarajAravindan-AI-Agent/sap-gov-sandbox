@@ -43,3 +43,4 @@ Nothing in the SAP sandbox changed in the cloud session. It had no access to the
 - Part-2 video DONE: project ~/Projects/sap-agents-video-v2 (Contabo /opt/ai-digest/sap-agents-v2), outputs ~/Videos/sap-governed-agents/sap-agents-part2.mp4 (34.4 MB, 5:05) + sap-agents-part2-linkedin-9p9.mp4 (9.81 MB); style horizon-left-rail-azure-teal registered + mirrored. Post draft: ~/Videos/sap-governed-agents/linkedin-post-part2.txt (NOT posted).
 - STILL RUNNING (trial, no cost): sap-gov-sandbox-srv, sap-gov-agent, sap-gov-ledger + BAS dev space govsandbox_dev. Stop when done.
 - Open: push repos (sandbox repo is PUBLIC; agent + ledger have no remote), export audit before trial ends (~mid-Jan 2027), DEPLOY.md runbook.
+- 2026-10-18: part-2 post PUBLISHED on LinkedIn (no repo links).
