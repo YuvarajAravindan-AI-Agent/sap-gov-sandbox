@@ -69,3 +69,6 @@ Do this from the BAS terminal interactively; never paste the key into a file or 
 - The database accepts connections from Cloud Foundry only, so read it through `cf run-task`.
 - Free ERP access without a customer system: only the read-only S/4HANA sandbox on api.sap.com (personal API key). Replace the body of `ledgerBalances()` in `srv/sor.js` with a call through a destination to use it.
 - Cost on pay-as-you-go: roughly 1.4 GB of CF memory at EUR 110.50 per GB-month is about EUR 150/month always-on (estimate from the Discovery Center, 2026-10-18).
+
+## Saved evidence
+`evidence/audit-export-20261019.jsonl`: audit export taken 2026-10-19 from the BTP trial before it is deleted (11 chained rows, seq 1..11, anchored at genesis, legacy baseline at seq 9 covering 21 pre-chain rows, head hash `50a253e8f4f7…`, SHA-256 of the file `85049fd2…ceee462`). Verify with `node tools/verify-export.js evidence/audit-export-20261019.jsonl`; expected: `OK  11 rows`. The 21 legacy rows themselves are attested by digest only; their content was not exported.
